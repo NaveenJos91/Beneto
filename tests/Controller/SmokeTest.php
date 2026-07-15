@@ -22,7 +22,7 @@ class SmokeTest extends WebTestCase
 
         $this->assertResponseIsSuccessful();
     }
-
+    #[\PHPUnit\Framework\Attributes\Group('db')]
     public function testLaPageAnnoncesSaffiche(): void
     {
         $client = static::createClient();

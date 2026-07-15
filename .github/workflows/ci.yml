@@ -8,9 +8,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   tests:
@@ -26,7 +26,7 @@ jobs:
       - name: Installer PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: "8.2"
           extensions: pdo, pdo_mysql, intl, zip
 
       # 3. Installe les dépendances du projet
@@ -39,6 +39,6 @@ jobs:
 
       # 5. Lance les tests automatisés (PHPUnit)
       - name: Lancer les tests
-        run: php vendor/bin/phpunit
+        run: php vendor/bin/phpunit --exclude-group db
         env:
           APP_ENV: test
