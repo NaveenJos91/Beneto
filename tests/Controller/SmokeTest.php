@@ -12,7 +12,7 @@ class SmokeTest extends WebTestCase
         $client->request('GET', '/');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Bénéto');
+        $this->assertSelectorTextContains('h1', 'entraider');
     }
 
     public function testLaPageConnexionSaffiche(): void
