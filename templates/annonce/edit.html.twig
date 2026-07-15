@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}Modifier l'annonce — Bénéto{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1 style="margin-bottom:12px;">Modifier l'annonce</h1>
+        {{ form_start(form) }}
+            {{ form_row(form.titre) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.theme) }}
+            {{ form_row(form.ville) }}
+            <button class="btn" type="submit">Enregistrer</button>
+        {{ form_end(form) }}
+    </div>
+    <p style="margin-top:16px;"><a href="{{ path('annonce_mine') }}">← Mes annonces</a></p>
+{% endblock %}

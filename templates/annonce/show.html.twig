@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ annonce.titre }} — Bénéto{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1 style="margin-bottom:6px;">{{ annonce.titre }}</h1>
+        <p style="color:#667; font-size:.9rem; margin-bottom:14px;">
+            {{ annonce.theme.nom }} · {{ annonce.ville.nom }} · publiée par {{ annonce.auteur.prenom }}
+        </p>
+        <p style="line-height:1.7; white-space:pre-line;">{{ annonce.description }}</p>
+
+        <div style="margin-top:20px;">
+            {% if app.user %}
+                <a class="btn" href="mailto:{{ annonce.auteur.email }}?subject=Bénéto - {{ annonce.titre }}">
+                    Contacter {{ annonce.auteur.prenom }}
+                </a>
+            {% else %}
+                <p><a href="{{ path('app_login') }}">Connectez-vous</a> pour contacter ce bénévole.</p>
+            {% endif %}
+        </div>
+    </div>
+    <p style="margin-top:16px;"><a href="{{ path('annonce_index') }}">← Retour aux annonces</a></p>
+{% endblock %}

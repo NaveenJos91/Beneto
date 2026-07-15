@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bénéto{% endblock %}</title>
+    <style>
+        :root { --navy: #2E3B4E; --light: #EDEFF2; --accent: #4B8F8C; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Georgia, 'Times New Roman', serif; color: var(--navy); background: var(--light); }
+        header { background: var(--navy); color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        header .logo { font-size: 1.4rem; font-weight: bold; }
+        header nav a { color: #fff; text-decoration: none; margin-left: 18px; font-size: .95rem; }
+        main { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+        footer { text-align: center; padding: 20px; color: #667; font-size: .85rem; }
+        footer a { color: #667; }
+        .flash { padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; }
+        .flash-success { background: #DFF5E1; color: #256029; }
+        .flash-error { background: #FBE0E0; color: #8A1F1F; }
+        form label { display:block; margin: 12px 0 4px; font-weight: bold; }
+        form input[type=text], form input[type=email], form input[type=password], form select {
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;
+        }
+        .btn { display:inline-block; margin-top:16px; background: var(--navy); color:#fff; border:none;
+               padding: 11px 20px; border-radius: 6px; font-size: 1rem; cursor: pointer; text-decoration:none; }
+        .btn-danger { background:#8A1F1F; }
+        .card { background:#fff; border-radius:10px; padding:26px; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+        /* Cases à cocher (rôles, consentement) : case ET libellé sur la même ligne */
+        .checkbox-line { display:flex; align-items:center; gap:8px; margin:8px 0; }
+        .checkbox-line label { font-weight: normal; margin: 0; display: inline; cursor: pointer; }
+        .checkbox-line input[type=checkbox] { width: auto; margin: 0; }
+        ul.errors, .form-errors { color:#8A1F1F; font-size:.9rem; margin:4px 0; padding-left:18px; }
+        ul li, .form-error-message { color:#C0392B; font-weight:bold; }
+        form ul { list-style:none; padding-left:0; margin:4px 0; }
+        form ul li { background:#FBE0E0; padding:8px 12px; border-radius:6px; margin:4px 0; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="{{ path('home') }}" style="color:#fff;text-decoration:none;">Bénéto</a></div>
+        <nav>
+            <a href="{{ path('home') }}">Accueil</a>
+            <a href="{{ path('annonce_index') }}">Annonces</a>
+            {% if app.user %}
+                {% if is_granted('ROLE_BENEVOLE') %}<a href="{{ path('annonce_mine') }}">Mes annonces</a>{% endif %}
+                {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('admin_annonces') }}">Modération</a>{% endif %}
+                <a href="{{ path('app_profile') }}">Mon profil</a>
+                <a href="{{ path('app_logout') }}">Déconnexion</a>
+            {% else %}
+                <a href="{{ path('app_login') }}">Connexion</a>
+                <a href="{{ path('app_register') }}">Inscription</a>
+            {% endif %}
+        </nav>
+    </header>
+    <main>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash flash-{{ label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+        {% block body %}{% endblock %}
+    </main>
+    <footer>
+        Bénéto — Projet CDA — Naveen Joseph &nbsp;|&nbsp;
+        <a href="{{ path('app_privacy') }}">Politique de confidentialité</a>
+    </footer>
+</body>
+</html>

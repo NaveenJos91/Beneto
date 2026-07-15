@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block title %}Inscription — Bénéto{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1 style="margin-bottom:8px;">Créer un compte</h1>
+        <p style="color:#667; margin-bottom:12px;">Vous pouvez être apprenant, bénévole, ou les deux.</p>
+
+        {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.prenom) }}
+            {{ form_row(registrationForm.nom) }}
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.ville) }}
+            {{ form_row(registrationForm.roles) }}
+            {{ form_row(registrationForm.plainPassword, {'label': false}) }}
+            <p style="font-size:.85rem;color:#667;margin-top:6px;">
+                8 caractères minimum : une minuscule, une majuscule, un chiffre et un caractère spécial.
+            </p>
+            {{ form_row(registrationForm.agreeTerms) }}
+            <p style="font-size:.85rem;margin-top:2px;">
+                <a href="{{ path('app_privacy') }}" target="_blank">Lire la politique de confidentialité</a>
+            </p>
+            <button class="btn" type="submit">Je m'inscris</button>
+        {{ form_end(registrationForm) }}
+
+        <p style="margin-top:16px;">Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a></p>
+    </div>
+{% endblock %}

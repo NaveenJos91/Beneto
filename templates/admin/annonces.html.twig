@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+{% block title %}Modération — Bénéto{% endblock %}
+{% block body %}
+    <h1 style="margin-bottom:16px;">Modération des annonces</h1>
+
+    <h2 style="margin-bottom:10px;">En attente ({{ enAttente|length }})</h2>
+    {% if enAttente is empty %}
+        <div class="card" style="margin-bottom:20px;"><p>Aucune annonce en attente.</p></div>
+    {% else %}
+        {% for annonce in enAttente %}
+            <div class="card" style="margin-bottom:12px;">
+                <h3 style="margin-bottom:4px;">{{ annonce.titre }}</h3>
+                <p style="color:#667; font-size:.9rem; margin-bottom:8px;">
+                    {{ annonce.theme.nom }} · {{ annonce.ville.nom }} · par {{ annonce.auteur.prenom }}
+                </p>
+                <p style="margin-bottom:10px;">{{ annonce.description|slice(0, 200) }}</p>
+                <form method="post" action="{{ path('admin_annonce_valider', {id: annonce.id}) }}" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('moderate_' ~ annonce.id) }}">
+                    <button class="btn" type="submit" style="margin-top:0;">Valider</button>
+                </form>
+                <form method="post" action="{{ path('admin_annonce_refuser', {id: annonce.id}) }}" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('moderate_' ~ annonce.id) }}">
+                    <button class="btn btn-danger" type="submit" style="margin-top:0;">Refuser</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h2 style="margin:20px 0 10px;">Publiées ({{ validees|length }})</h2>
+    {% for annonce in validees %}
+        <div class="card" style="margin-bottom:8px;">
+            <strong>{{ annonce.titre }}</strong> — {{ annonce.theme.nom }} · {{ annonce.ville.nom }}
+        </div>
+    {% else %}
+        <div class="card"><p>Aucune annonce publiée pour le moment.</p></div>
+    {% endfor %}
+{% endblock %}

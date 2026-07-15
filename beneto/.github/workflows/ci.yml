@@ -1,0 +1,44 @@
+# ------------------------------------------------------------
+# Intégration continue (CI) de Bénéto
+# Ce workflow se lance automatiquement à chaque push et à
+# chaque pull request. Il vérifie que le projet s'installe
+# et que tous les tests automatisés passent.
+# ------------------------------------------------------------
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    name: Installation + tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Récupère le code du dépôt
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      # 2. Installe PHP 8.2 avec les extensions nécessaires
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo, pdo_mysql, intl, zip
+
+      # 3. Installe les dépendances du projet
+      - name: Installer les dépendances (Composer)
+        run: composer install --no-interaction --prefer-dist
+
+      # 4. Vérifie la syntaxe des fichiers PHP du projet
+      - name: Lint PHP (vérification de syntaxe)
+        run: find src tests -name "*.php" -print0 | xargs -0 -n1 php -l
+
+      # 5. Lance les tests automatisés (PHPUnit)
+      - name: Lancer les tests
+        run: php vendor/bin/phpunit
+        env:
+          APP_ENV: test

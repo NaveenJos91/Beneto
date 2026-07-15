@@ -1,0 +1,66 @@
+services:
+  # Conteneur applicatif : Symfony (PHP-FPM)
+  app:
+    build: .
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - db
+
+  # Serveur web : Nginx sert l'application et transmet le PHP au conteneur app
+  web:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+  # Base de donnees relationnelle (coeur metier)
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: beneto
+      MYSQL_USER: beneto
+      MYSQL_PASSWORD: beneto
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # Interface web pour visualiser la base MySQL
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      PMA_HOST: db
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+  # Base de donnees NoSQL (journalisation des signalements)
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./docker/mongo:/scripts
+
+  # Interface web pour visualiser MongoDB (optionnel)
+  mongo-express:
+    image: mongo-express:latest
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH: "false"
+    ports:
+      - "8082:8081"
+    depends_on:
+      - mongo
+
+volumes:
+  db_data:
+  mongo_data:

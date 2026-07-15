@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Connexion — Bénéto{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1 style="margin-bottom:16px;">Connexion</h1>
+
+        {% if error %}
+            <div class="flash flash-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <form method="post">
+            <label for="username">Email</label>
+            <input type="email" id="username" name="_username" value="{{ last_username }}" required autofocus>
+
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="_password" required>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button class="btn" type="submit">Se connecter</button>
+        </form>
+
+        <p style="margin-top:16px;">Pas encore de compte ? <a href="{{ path('app_register') }}">S'inscrire</a></p>
+    </div>
+{% endblock %}

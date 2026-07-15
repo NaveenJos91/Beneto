@@ -1,0 +1,33 @@
+security:
+    # Hashage sécurisé des mots de passe avec bcrypt (coût 12)
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: bcrypt
+            cost: 12
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                default_target_path: home
+            logout:
+                path: app_logout
+                target: home
+
+    access_control:
+        - { path: ^/profil, roles: ROLE_USER }
+        - { path: ^/annonce/nouvelle, roles: ROLE_BENEVOLE }
+        - { path: ^/admin, roles: ROLE_ADMIN }

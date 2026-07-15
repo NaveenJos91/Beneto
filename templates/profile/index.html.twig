@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mon profil — Bénéto{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1 style="margin-bottom:12px;">Mon profil</h1>
+        <p><strong>Nom :</strong> {{ app.user.prenom }} {{ app.user.nom }}</p>
+        <p><strong>Email :</strong> {{ app.user.email }}</p>
+        <p><strong>Ville :</strong> {{ app.user.ville ? app.user.ville.nom : 'Non renseignée' }}</p>
+        <p style="margin-top:10px;"><strong>Mes rôles :</strong></p>
+        <ul>
+            {% if 'ROLE_APPRENANT' in app.user.roles %}<li>Apprenant</li>{% endif %}
+            {% if 'ROLE_BENEVOLE' in app.user.roles %}<li>Bénévole</li>{% endif %}
+            {% if 'ROLE_ADMIN' in app.user.roles %}<li>Administrateur</li>{% endif %}
+        </ul>
+
+        <div style="margin-top:16px;">
+            {% if 'ROLE_APPRENANT' not in app.user.roles %}
+                <a class="btn" href="{{ path('app_profile_add_role', {role: 'ROLE_APPRENANT'}) }}">Devenir aussi apprenant</a>
+            {% endif %}
+            {% if 'ROLE_BENEVOLE' not in app.user.roles %}
+                <a class="btn" href="{{ path('app_profile_add_role', {role: 'ROLE_BENEVOLE'}) }}">Devenir aussi bénévole</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+        <h2 style="margin-bottom:8px;">Supprimer mon compte</h2>
+        <p style="color:#667;margin-bottom:10px;">
+            Conformément au RGPD (droit à l'effacement), vous pouvez supprimer votre compte
+            et toutes vos données. Cette action est définitive.
+        </p>
+        <form method="post" action="{{ path('app_profile_delete') }}"
+              onsubmit="return confirm('Supprimer définitivement votre compte ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
+            <button class="btn btn-danger" type="submit">Supprimer définitivement mon compte</button>
+        </form>
+    </div>
+{% endblock %}

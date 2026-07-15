@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block title %}Politique de confidentialité — Bénéto{% endblock %}
+{% block body %}
+    <div class="card">
+        <h1 style="margin-bottom:12px;">Politique de confidentialité (RGPD)</h1>
+
+        <h2 style="margin:14px 0 6px;">Données collectées</h2>
+        <p>Bénéto collecte uniquement les données nécessaires à la mise en relation :
+        prénom, nom, adresse email et ville. Aucune donnée n'est cédée à des tiers.</p>
+
+        <h2 style="margin:14px 0 6px;">Finalité</h2>
+        <p>Ces données servent exclusivement à créer votre compte et à permettre la mise en
+        relation entre bénévoles et apprenants pour du tutorat local.</p>
+
+        <h2 style="margin:14px 0 6px;">Sécurité</h2>
+        <p>Les mots de passe ne sont jamais stockés en clair : ils sont hashés (bcrypt).
+        Les accès aux données sont contrôlés selon le rôle de l'utilisateur.</p>
+
+        <h2 style="margin:14px 0 6px;">Vos droits</h2>
+        <p>Vous disposez d'un droit d'accès, de rectification et d'effacement. Vous pouvez
+        supprimer vous-même votre compte et toutes vos données depuis votre profil, à tout moment.</p>
+
+        <h2 style="margin:14px 0 6px;">Éco-conception</h2>
+        <p>Bénéto applique plusieurs mesures d'éco-conception : rendu des pages côté serveur
+        sans bibliothèque JavaScript lourde, utilisation de polices système (aucune police
+        téléchargée), absence de traqueurs et de ressources externes, mise en cache du code (OPcache),
+        et requêtes en base optimisées et paginées. L'objectif est de limiter les données transférées
+        et la consommation de ressources.</p>
+    </div>
+{% endblock %}
