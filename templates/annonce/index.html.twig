@@ -1,15 +1,24 @@
+{# Cette page affiche la liste des annonces avec un formulaire de recherche. #}
+{# "extends" = cette page réutilise le gabarit commun base.html.twig (en-tête, menu, pied de page). #}
 {% extends 'base.html.twig' %}
+
+{# On définit le titre de l'onglet du navigateur. #}
 {% block title %}Annonces — Bénéto{% endblock %}
+
+{# "block body" = le contenu propre à cette page, inséré dans le gabarit. #}
 {% block body %}
     <h1 style="margin-bottom:16px;">Trouver un bénévole</h1>
 
+    {# --- Formulaire de recherche (méthode GET : les filtres passent dans l'URL) --- #}
     <div class="card" style="margin-bottom:20px;">
         <form method="get" style="display:flex; gap:12px; flex-wrap:wrap; align-items:end;">
             <div style="flex:1; min-width:180px;">
                 <label for="theme">Thématique</label>
                 <select id="theme" name="theme">
                     <option value="">Toutes les thématiques</option>
+                    {# Boucle Twig : on parcourt la liste des thèmes envoyée par le contrôleur #}
                     {% for theme in themes %}
+                        {# On ré-affiche l'option choisie comme "selected" pour garder le filtre après recherche #}
                         <option value="{{ theme.id }}" {{ selectedTheme == theme.id ? 'selected' }}>{{ theme.nom }}</option>
                     {% endfor %}
                 </select>
@@ -18,6 +27,7 @@
                 <label for="ville">Ville</label>
                 <select id="ville" name="ville">
                     <option value="">Toutes les villes</option>
+                    {# Même principe pour la liste des villes #}
                     {% for ville in villes %}
                         <option value="{{ ville.id }}" {{ selectedVille == ville.id ? 'selected' }}>{{ ville.nom }}</option>
                     {% endfor %}
@@ -27,16 +37,23 @@
         </form>
     </div>
 
+    {# --- Affichage des résultats --- #}
+    {# Condition Twig : si aucune annonce ne correspond, on affiche un message... #}
     {% if annonces is empty %}
         <div class="card"><p>Aucune annonce ne correspond à votre recherche pour le moment.</p></div>
     {% else %}
+        {# ...sinon on parcourt et on affiche chaque annonce #}
         {% for annonce in annonces %}
             <div class="card" style="margin-bottom:14px;">
+                {# {{ ... }} = on affiche une donnée. Twig échappe automatiquement le contenu (protection anti-XSS). #}
                 <h2 style="margin-bottom:6px;">{{ annonce.titre }}</h2>
                 <p style="color:#667; font-size:.9rem; margin-bottom:8px;">
+                    {# On accède aux données liées : le thème, la ville et le prénom de l'auteur #}
                     {{ annonce.theme.nom }} · {{ annonce.ville.nom }} · par {{ annonce.auteur.prenom }}
                 </p>
+                {# "slice(0, 160)" = on n'affiche que les 160 premiers caractères, puis "…" si le texte est plus long #}
                 <p>{{ annonce.description|slice(0, 160) }}{% if annonce.description|length > 160 %}…{% endif %}</p>
+                {# "path('annonce_show', ...)" = génère l'adresse vers le détail de cette annonce #}
                 <a class="btn" href="{{ path('annonce_show', {id: annonce.id}) }}">Voir l'annonce</a>
             </div>
         {% endfor %}

@@ -1,28 +1,99 @@
+{# ============================================================= #}
+{#  base.html.twig — Gabarit principal (layout) de Bénéto        #}
+{#  Toutes les pages du site héritent de ce fichier : on écrit   #}
+{#  l'en-tête, le menu et le pied de page UNE seule fois, et      #}
+{#  chaque page ne remplit que les "blocks" (title, body).       #}
+{# ============================================================= #}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    {# S'assure que le site s'affiche bien sur mobile (responsive) #}
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {# Titre de l'onglet. {% block title %} = zone que chaque page
+       peut remplacer ; "Bénéto" est la valeur par défaut. #}
     <title>{% block title %}Bénéto{% endblock %}</title>
-    <style>
-        :root {
-            --cream:      #FBF4EC;
-            --card:       #FFFFFF;
-            --terracotta: #C4633F;
-            --terracotta-dark: #A44E2F;
-            --coral:      #E8845E;
-            --sage:       #6E8B5B;
-            --text:       #3B2A24;
-            --muted:      #8A756B;
-            --border:     #EADFD4;
-            --radius:     20px;
+
+    /* ===================================================================
+           RESPONSIVE mobile-first
+            on adapte la mise en page pour les écrans plus larges
+           grâce aux "media queries" (@media) et à leurs points de rupture.
+           =================================================================== */
+
+        /* --- Point de rupture TABLETTE : à partir de 600px de large --- */
+        @media (min-width: 600px) {
+            main {
+                padding: 40px 32px; /* on aère davantage sur écran moyen */
+            }
+            .card {
+                padding: 32px; /* cartes plus spacieuses */
+            }
         }
+
+        /* --- Point de rupture ORDINATEUR : à partir de 900px de large --- */
+        @media (min-width: 900px) {
+            header {
+                padding: 16px 40px; /* en-tête plus large */
+            }
+            .brand .name {
+                font-size: 1.7rem; /* logo un peu plus grand */
+            }
+        }
+
+        /* --- Petits écrans (téléphones) : en dessous de 600px --- */
+        /* On empile les éléments et on réduit les marges pour ne rien couper. */
+        @media (max-width: 599px) {
+            header {
+                flex-direction: column;   /* logo au-dessus, menu en dessous */
+                align-items: flex-start;
+            }
+            header nav {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            main {
+                padding: 24px 16px;       /* marges réduites sur mobile */
+            }
+            h1 {
+                font-size: 1.8rem;        /* titres adaptés au petit écran */
+            }
+        }
+
+    <style>
+        /* --- Palette de couleurs centralisée (variables CSS) ---
+           On définit les couleurs une fois dans :root, puis on les
+           réutilise partout avec var(--nom). Avantage : pour changer
+           une couleur du site, on ne modifie qu'UNE ligne ici. */
+        :root {
+            --cream:      #FBF4EC;   /* fond général crème */
+            --card:       #FFFFFF;   /* fond des cartes */
+            --terracotta: #C4633F;   /* couleur principale (identité Bénéto) */
+            --terracotta-dark: #A44E2F; /* variante foncée (survol) */
+            --coral:      #E8845E;   /* accent chaud */
+            --sage:       #6E8B5B;   /* vert doux (secondaire) */
+            --text:       #3B2A24;   /* couleur du texte */
+            --muted:      #8A756B;   /* texte discret (footer, légendes) */
+            --border:     #EADFD4;   /* bordures légères */
+            --radius:     20px;      /* rayon d'arrondi de référence */
+        }
+
+        /* Réinitialisation de base : on enlève les marges par défaut
+           du navigateur et on inclut la bordure dans la largeur
+           (box-sizing) pour des tailles prévisibles. */
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
+            /* Polices "système" (déjà présentes sur l'appareil) :
+               aucune police n'est téléchargée -> page plus légère,
+               c'est un choix d'éco-conception. */
             font-family: ui-rounded, "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
             color: var(--text);
             line-height: 1.65;
-            /* Fond crème avec une texture papier très douce (grain subtil) */
+
+            /* Fond crème avec une texture papier très douce (grain subtil)
+               créée uniquement en CSS (deux motifs de petits points),
+               donc sans image à charger. */
             background-color: var(--cream);
             background-image:
                 radial-gradient(rgba(196,99,63,.035) 1px, transparent 1px),
@@ -30,40 +101,49 @@
             background-size: 22px 22px, 34px 34px;
             background-position: 0 0, 11px 11px;
         }
-        /* --- En-tête --- */
+
+        /* --- En-tête (barre du haut, présente sur toutes les pages) --- */
         header {
             background: var(--terracotta);
             color: var(--cream);
             padding: 14px 26px;
+            /* Flexbox : logo à gauche, menu à droite, et passage à la
+               ligne (flex-wrap) sur petit écran = responsive. */
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
             gap: 10px;
-            box-shadow: 0 3px 14px rgba(164, 78, 47, .2);
+            box-shadow: 0 3px 14px rgba(164, 78, 47, .2); /* ombre douce sous l'en-tête */
         }
         .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: var(--cream); }
         .brand .name { font-size: 1.55rem; font-weight: 800; letter-spacing: .3px; }
-        /* petit décalage manuscrit du badge */
+        /* petit décalage manuscrit du badge (touche "faite main") */
         .brand svg { transform: rotate(-4deg); }
+
         header nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
         header nav a {
             color: var(--cream); text-decoration: none; font-size: .95rem;
             padding: 8px 14px; border-radius: 999px; transition: background .15s;
         }
+        /* Effet au survol du menu (retour visuel à l'utilisateur) */
         header nav a:hover { background: rgba(255,255,255,.16); }
 
+        /* Contenu central : largeur max pour garder des lignes lisibles,
+           centré horizontalement (margin auto). */
         main { max-width: 920px; margin: 0 auto; padding: 36px 24px; }
 
         h1, h2, h3 { font-weight: 800; }
-        /* --- Soulignement "fait main" sous les titres de section --- */
+
+        /* --- Soulignement "fait main" sous les titres de section ---
+           Trait irrégulier dessiné en CSS (::after), pour un rendu
+           chaleureux et moins impersonnel. */
         .titre-main { position: relative; display: inline-block; }
         .titre-main::after {
             content: ""; position: absolute; left: -2px; right: -6px; bottom: -6px; height: 8px;
-            /* trait irrégulier, comme tracé au feutre */
             background: var(--coral);
-            border-radius: 50% 40% 45% 55% / 60% 55% 45% 50%;
+            border-radius: 50% 40% 45% 55% / 60% 55% 45% 50%; /* forme volontairement irrégulière */
             opacity: .35; transform: rotate(-1.2deg);
         }
 
-        /* --- Cartes : arrondies, ombre douce asymétrique, très léger décalage --- */
+        /* --- Cartes : arrondies, ombre douce, très léger décalage --- */
         .card {
             background: var(--card);
             border-radius: 22px 20px 24px 18px; /* coins volontairement pas identiques */
@@ -71,8 +151,9 @@
             box-shadow: 6px 8px 24px rgba(59, 42, 36, .08);
             border: 1px solid var(--border);
         }
-        .card + .card { margin-top: 16px; }
-        /* chaque carte légèrement inclinée différemment (fait main) */
+        .card + .card { margin-top: 16px; } /* espace entre deux cartes qui se suivent */
+        /* Chaque carte légèrement inclinée en alternance (effet "fait main").
+           :nth-of-type(odd/even) = cartes impaires / paires. */
         main > .card:nth-of-type(odd)  { transform: rotate(-0.35deg); }
         main > .card:nth-of-type(even) { transform: rotate(0.4deg); }
 
@@ -84,18 +165,21 @@
             cursor: pointer; text-decoration: none; transition: background .15s, transform .05s;
             font-family: inherit; box-shadow: 2px 3px 0 rgba(164,78,47,.25);
         }
-        .btn:hover { background: var(--terracotta-dark); }
-        .btn:active { transform: translateY(1px); box-shadow: 1px 1px 0 rgba(164,78,47,.25); }
+        .btn:hover { background: var(--terracotta-dark); }        /* survol : couleur plus foncée */
+        .btn:active { transform: translateY(1px); box-shadow: 1px 1px 0 rgba(164,78,47,.25); } /* clic : bouton "enfoncé" */
+        /* Variante rouge pour les actions dangereuses (ex : supprimer) */
         .btn-danger { background: #B3452F; box-shadow: 2px 3px 0 rgba(120,40,25,.25); }
         .btn-danger:hover { background: #93361F; }
 
-        /* --- Champs de formulaire doux --- */
+        /* --- Champs de formulaire --- */
         form label { display: block; margin: 14px 0 5px; font-weight: 600; color: var(--text); }
         form input[type=text], form input[type=email], form input[type=password],
         form select, form textarea {
             width: 100%; padding: 12px 14px; border: 1px solid var(--border);
             border-radius: 12px; font-size: 1rem; font-family: inherit; background: #FFFDFB; color: var(--text);
         }
+        /* Champ sélectionné : bordure colorée + halo = accessibilité
+           (l'utilisateur voit clairement où il écrit). */
         form input:focus, form select:focus, form textarea:focus {
             outline: none; border-color: var(--coral); box-shadow: 0 0 0 3px rgba(232,132,94,.18);
         }
@@ -103,21 +187,28 @@
         .checkbox-line label { font-weight: 400; margin: 0; display: inline; cursor: pointer; }
         .checkbox-line input[type=checkbox] { width: auto; margin: 0; accent-color: var(--terracotta); }
 
-        /* --- Messages --- */
+        /* --- Messages flash (retours après une action) --- */
         .flash { padding: 13px 18px; border-radius: 12px; margin-bottom: 16px; font-weight: 600; }
-        .flash-success { background: #E7F0E0; color: #3F5A30; }
-        .flash-error   { background: #F8E4DC; color: #8A331F; }
+        .flash-success { background: #E7F0E0; color: #3F5A30; } /* succès : vert */
+        .flash-error   { background: #F8E4DC; color: #8A331F; } /* erreur : rouge */
+        /* Liste des erreurs de validation d'un formulaire */
         form ul { list-style: none; padding-left: 0; margin: 4px 0; }
         form ul li { background: #F8E4DC; color: #A0402A; font-weight: 600; padding: 8px 12px; border-radius: 10px; margin: 4px 0; }
 
         a { color: var(--terracotta-dark); }
+        /* --- Pied de page --- */
         footer { text-align: center; padding: 26px; color: var(--muted); font-size: .88rem; }
         footer a { color: var(--muted); }
     </style>
 </head>
 <body>
+    <!-- ================= EN-TÊTE : logo + menu de navigation ================= -->
     <header>
+        {# path('home') : Symfony génère l'URL à partir du NOM de la route.
+           Avantage : si l'adresse change, on ne modifie que la route,
+           jamais les liens en dur dans les templates. #}
         <a class="brand" href="{{ path('home') }}">
+            <!-- Logo : livre ouvert dessiné en SVG (vectoriel, net à toute taille) -->
             <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <rect width="40" height="40" rx="13" fill="#FBEFE7"/>
                 <!-- Livre ouvert -->
@@ -130,28 +221,47 @@
             </svg>
             <span class="name">Bénéto</span>
         </a>
+
+        {# --- Menu qui S'ADAPTE selon qui est connecté et son rôle --- #}
         <nav>
+            {# Liens visibles par tout le monde #}
             <a href="{{ path('home') }}">Accueil</a>
             <a href="{{ path('annonce_index') }}">Annonces</a>
+
+            {# app.user : vrai si un utilisateur est CONNECTÉ #}
             {% if app.user %}
+                {# is_granted('ROLE_...') : contrôle d'accès par rôle.
+                   Le lien "Mes annonces" n'apparaît que pour un bénévole. #}
                 {% if is_granted('ROLE_BENEVOLE') %}<a href="{{ path('annonce_mine') }}">Mes annonces</a>{% endif %}
+                {# "Modération" réservée à l'administrateur #}
                 {% if is_granted('ROLE_ADMIN') %}<a href="{{ path('admin_annonces') }}">Modération</a>{% endif %}
                 <a href="{{ path('app_profile') }}">Mon profil</a>
                 <a href="{{ path('app_logout') }}">Déconnexion</a>
             {% else %}
+                {# Visiteur non connecté : on propose connexion / inscription #}
                 <a href="{{ path('app_login') }}">Connexion</a>
                 <a href="{{ path('app_register') }}">Inscription</a>
             {% endif %}
         </nav>
     </header>
+
+    <!-- ========================= CONTENU DE LA PAGE ========================= -->
     <main>
+        {# --- Messages flash : petits messages temporaires envoyés par le
+               contrôleur (ex : "Annonce créée"). On boucle sur chaque
+               catégorie (success, error...) puis sur chaque message. --- #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div class="flash flash-{{ label }}">{{ message }}</div>
             {% endfor %}
         {% endfor %}
+
+        {# {% block body %} : emplacement que CHAQUE page remplit avec son
+           propre contenu. C'est le cœur de l'héritage de templates. #}
         {% block body %}{% endblock %}
     </main>
+
+    <!-- ============================= PIED DE PAGE ============================= -->
     <footer>
         Fait avec soin pour rapprocher ceux qui apprennent et ceux qui aident &nbsp;·&nbsp;
         <a href="{{ path('app_privacy') }}">Confidentialité</a>
